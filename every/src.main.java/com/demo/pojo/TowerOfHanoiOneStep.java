@@ -38,7 +38,7 @@ public class TowerOfHanoiOneStep {
 	}
 	
 	public void leftToMiddle() throws Exception {
-		this.check(middle, left);
+		this.check(left, middle);
 		this.middle.push(left.pop());
 		this.preMethod = "LM";
 		count ++;
@@ -46,7 +46,7 @@ public class TowerOfHanoiOneStep {
 	}
 	
 	public void middleToRight() throws Exception {
-		this.check(right, middle);
+		this.check(middle, right);
 		this.right.push(middle.pop());
 		this.preMethod = "MR";
 		count ++;
@@ -54,7 +54,7 @@ public class TowerOfHanoiOneStep {
 	}
 	
 	public void rightToMiddle() throws Exception {
-		this.check(middle, right);
+		this.check(right, middle);
 		this.middle.push(right.pop());
 		this.preMethod = "RM";
 		count ++;
@@ -62,19 +62,24 @@ public class TowerOfHanoiOneStep {
 	}
 	
 	public void middleToLeft() throws Exception {
-		this.check(left, middle);
+		this.check(middle, left);
 		this.left.push(middle.pop());
 		this.preMethod = "ML";
 		count ++;
 		System.out.println("move "+left.peek()+" from middle to left" );
 	}
 	
-	private void check(Stack<Integer> to, Stack<Integer> from) throws Exception{
-		if (from.size() == 0 || (to.size() != 0 && from.peek() > to.peek())) {
+	private void check(Stack<Integer> from, Stack<Integer> to) throws Exception{
+		if (from.size() == 0 || (to.size() != 0 && to.peek() < from.peek())) {
 			throw new RuntimeException("error step!");
 		}
 	}
 	
+	/**
+	 * 非递归计算从左到右最少步数
+	 * @return
+	 * @throws Exception
+	 */
 	public int handler() throws Exception{
 		while (right.size() != max) {
 			if (!this.preMethod.equals("ML")) {
@@ -117,25 +122,70 @@ public class TowerOfHanoiOneStep {
 		return count;
 		
 	}
-
-	public Stack<Integer> getLeft() {
-		return left;
-	}
-	public void setLeft(Stack<Integer> left) {
-		this.left = left;
-	}
-	public Stack<Integer> getMiddle() {
-		return middle;
-	}
-	public void setMiddle(Stack<Integer> middle) {
-		this.middle = middle;
-	}
-	public Stack<Integer> getRight() {
-		return right;
-	}
-	public void setRight(Stack<Integer> right) {
-		this.right = right;
+	
+	/**
+	 * 递归计算从左到右最少步数
+	 * @return
+	 * @throws Exception
+	 */
+	public int handlerByRecursion() throws Exception {
+		this.moveNSubOne(max, left, right);
+		return count;
 	}
 	
+	private void moveNSubOne(int n, Stack<Integer> from, Stack<Integer> to) throws Exception {
+		if (n == 1) {
+			if (from == left) {
+				if (to == middle) {
+					this.leftToMiddle();
+				} else {
+					this.leftToMiddle();
+					this.middleToRight();
+				}
+			} else if (from == middle) {
+				if (to == left) {
+					this.middleToLeft();
+				} else {
+					this.middleToRight();
+				}
+			} else if (from == right) {
+				if (to == middle) {
+					this.rightToMiddle();
+				} else {
+					this.rightToMiddle();
+					this.middleToLeft();
+				}
+			}
+		} else {
+			if (from == left) {
+				if (to == middle) {
+					
+				} else {
+					this.moveNSubOne(n - 1, left, right);
+					this.leftToMiddle();
+					this.moveNSubOne(n - 1, right, left);
+					this.middleToRight();
+					this.moveNSubOne(n - 1, left, right);
+				}
+			} else if (from == middle) {
+				if (to == left) {
+					
+				} else {
+					
+				}
+			} else if (from == right) {
+				if (to == middle) {
+					
+				} else {
+					this.moveNSubOne(n - 1, right, left);
+					this.rightToMiddle();
+					this.moveNSubOne(n - 1, left, right);
+					this.middleToLeft();
+					this.moveNSubOne(n - 1, right, left);
+				}
+			}
+		}
+		
+	}
 	
 }
