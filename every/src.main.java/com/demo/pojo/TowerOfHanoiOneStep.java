@@ -188,4 +188,13 @@ public class TowerOfHanoiOneStep {
 		
 	}
 	
+	public static void main(String[] args) throws Exception {
+		System.out.println("--------Run Begin---------");
+		TowerOfHanoiOneStep tower = new TowerOfHanoiOneStep(4);
+		int count = tower.handlerByRecursion();
+		//int count = tower.handler();
+		System.out.println(count);
+		System.out.println("--------Run End-----------");
+	}
+	
 }
